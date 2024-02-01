@@ -20,7 +20,9 @@
 
 void	simul(void *philo)
 {
-	
+	(void)philo;
+//	printf("time: %llu\n", crono()/100);
+	printf("hola\n\n");
 }
 
 int	start_simulation(t_rules *rules)
@@ -30,13 +32,12 @@ int	start_simulation(t_rules *rules)
 
 	i = 0;
 	ph = rules->philos;
+	rules->start_time = crono();
 	while (i < rules->philo_units)
 	{
 		if (pthread_create(&(ph[i].threat_id), NULL, (void *)simul, &(ph[i])))
 			return (THREADS);
-		ph[i].time_last_meal = crono();
-		if (ph[i].time_last_meal == 0)
-			return (TIME);
 		i++;
 	}
+	return (0);
 }

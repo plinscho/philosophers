@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:49:28 by plinscho          #+#    #+#             */
-/*   Updated: 2024/01/31 20:03:53 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/01 19:21:49 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	init_philo(t_rules *rules)
 	int	i;
 
 	i = 0;
+	pthread_mutex_lock(&(rules->check_meal));
 	while (i < rules->philo_units)
 	{
 		rules->philos[i].id = i + 1;

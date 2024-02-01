@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 12:31:42 by plinscho          #+#    #+#             */
-/*   Updated: 2024/01/31 20:30:46 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/01 19:18:02 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,21 +48,19 @@ typedef struct s_philo
 
 typedef struct s_rules
 {
-	int			philo_units;
-	uint64_t	time_to_die;
-	uint64_t	time_to_eat;
-	uint64_t	time_to_sleep;
-	int			died;
-	int			meals;
-	int			all_ate;
-	uint64_t	start_time;
+	int				philo_units;
+	uint64_t		time_to_die;
+	uint64_t		time_to_eat;
+	uint64_t		time_to_sleep;
+	int				died;
+	int				meals;
+	int				all_ate;
+	uint64_t		start_time;
 	pthread_mutex_t	check_meal;
 	pthread_mutex_t	printer;
 	pthread_mutex_t	forks[250];
 	t_philo			philos[250];
 }	t_rules;
-
-
 
 // ### 	ERROR CODES
 typedef enum errors

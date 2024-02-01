@@ -6,11 +6,20 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/28 20:13:05 by plinscho          #+#    #+#             */
-/*   Updated: 2024/01/31 20:32:00 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/01 18:43:26 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int			ph_usleep(uint64_t ms_wait)
+{
+	while (ms_wait > 0)
+	{
+		ms_wait--;
+	}
+	return (0);
+}
 
 uint64_t	time_inc(uint64_t past, uint64_t present)
 {
@@ -41,7 +50,7 @@ void		print_philo(t_rules *data)
 		printf("Philo r_fork:	[%d]\n", tmp.r_fork_id);
 		printf("Philo l_fork:	[%d]\n", tmp.l_fork_id);
 		printf("Philo nºmeals:	[%d]\n", tmp.num_meals);
-		printf("Philo nºmeals:	[%ld]\n", tmp.time_last_meal);
+		printf("Philo nºmeals:	[%lld]\n", tmp.time_last_meal);
 		printf("_____________________\n");
 		i++;
 	}
