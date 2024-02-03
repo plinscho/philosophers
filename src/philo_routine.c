@@ -18,11 +18,11 @@
 
 #include "philo.h"
 
-void	simul(void *philo)
+void	simul(t_philo *ph)
 {
-	(void)philo;
-//	printf("time: %llu\n", crono()/100);
-	printf("hola\n\n");
+	usleep(250);
+	printf("\033[1;31mPhilo n. %d created.\n", ph->id);
+	printf("  \033[1;32mPhilo n. %d created.\n", ph->id);
 }
 
 int	start_simulation(t_rules *rules)
@@ -35,7 +35,7 @@ int	start_simulation(t_rules *rules)
 	rules->start_time = crono();
 	while (i < rules->philo_units)
 	{
-		if (pthread_create(&(ph[i].threat_id), NULL, (void *)simul, &(ph[i])))
+		if (pthread_create(&(ph[i].threat_id), NULL, (void *)simul, &(rules->philos[i])))
 			return (THREADS);
 		i++;
 	}

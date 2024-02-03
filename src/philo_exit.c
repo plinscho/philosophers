@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 13:10:39 by plinscho          #+#    #+#             */
-/*   Updated: 2024/01/31 19:57:59 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/03 15:27:21 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,5 @@ int	free_struct(t_rules *table)
 		pthread_mutex_destroy(&(table->forks[i]));
 	pthread_mutex_destroy(&(table->printer));
 	pthread_mutex_destroy(&(table->check_meal));
-	return (exit_philo("THREADS", "Error creating threads.\n", THREADS));
+	return (0);
 }

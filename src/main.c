@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 18:30:32 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/01 19:22:35 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/03 15:51:39 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,23 @@ int	init_struct_mutex(int argc, char **argv, t_rules *rules)
 	return (0);	
 }
 
+// 	joining threads created before.
+int	join_threads(t_rules *data)
+{
+	int			i;
+	pthread_t	p;
+
+	i = 0;
+	while (i < data->philo_units)
+	{
+		p = data->philos[i].threat_id;
+		if (pthread_join(p, NULL) != 0)
+			return (exit_philo("JOIN_THREADS", "Error joining threads.", THREADS));
+		i++;
+	}
+	return (0);
+}
+
 int main(int argc, char **argv)
 {
 	t_rules		rules;
@@ -72,6 +89,7 @@ int main(int argc, char **argv)
 		return (free_struct(&rules));
 	if (start_simulation(&rules))
 		return(free_struct(&rules));
+	join_threads(&rules);
 // uint64_t start = crono();
 // 	while (1)
 // 		printf("%llu\n", (crono() - start) / 1000);
