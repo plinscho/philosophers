@@ -14,12 +14,7 @@
 
 void	check_philos(t_rules *rules)
 {
-	uint64_t	time;
-
-	while (rules->died == 0)
-	{
-		
-	}
+	(void)rules;
 }
 
 void	ph_eat(t_philo *ph)
@@ -29,7 +24,7 @@ void	ph_eat(t_philo *ph)
 	pthread_mutex_lock(&ph->r_fork);
 	ph_print(C, ph, FORK, false);
 	pthread_mutex_lock(&ph->rules->m_check_meal);
-	ph->time_to_die = ph->rules->time_to_die + (crono() - ph->rules->start_time);
+	ph->time_to_die += crono() - ph->rules->start_time;
 	ph->num_meals++;
 	pthread_mutex_unlock(&ph->rules->m_check_meal);
 	ph_print(G, ph, EAT, false);
