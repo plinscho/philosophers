@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 12:31:42 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/01 19:18:02 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/03 20:31:23 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,19 +31,26 @@
 # include <limits.h>
 # include <errno.h>
 
+#define FORK "has taken a fork"
+#define EAT "is eating"
+#define SLEEP "is sleeping"
+#define THINK "is thinking"
+#define DIE "has died"
+
 /*
 	STRUCTS
 */
 
 typedef struct s_philo
 {
+	pthread_t		threat_id;
+	pthread_mutex_t	l_fork;
+	pthread_mutex_t	r_fork;
+	struct s_rules	*rules;	
 	int				id;
 	int				num_meals;
-	int				l_fork_id;
-	int				r_fork_id;
 	uint64_t		time_last_meal;
-	pthread_t		threat_id;
-	struct s_rules	*rules;	
+	uint64_t		time_to_die;
 }	t_philo;
 
 typedef struct s_rules
@@ -53,13 +60,13 @@ typedef struct s_rules
 	uint64_t		time_to_eat;
 	uint64_t		time_to_sleep;
 	int				died;
-	int				meals;
+	int				max_meals;
 	int				all_ate;
 	uint64_t		start_time;
-	pthread_mutex_t	check_meal;
-	pthread_mutex_t	printer;
-	pthread_mutex_t	forks[250];
-	t_philo			philos[250];
+	pthread_mutex_t	m_check_meal;
+	pthread_mutex_t	m_printer;
+	pthread_mutex_t	m_dead;
+	t_philo			*philos;
 }	t_rules;
 
 // ### 	ERROR CODES
@@ -73,25 +80,35 @@ typedef enum errors
 	
 } error_code;
 
-/*
-	UTILS
-*/
+// COLOR CODES
+# define E "\033[m"        //end
+# define R "\033[1;31m"    //red
+# define G "\033[1;32m"    //green
+# define Y "\033[1;33m"    //yellow
+# define B "\033[1;34m"    //blue
+# define T "\033[1;35m"	   //Turquesa
+# define C "\033[1;36m"    //Cyan
+# define O "\033[38;5;208m" //orange
+# define F "\033[38;5;128m"  //purple
+
+// ROUTINE
+void	simul(t_philo *ph);
+
+// UTILS
 int			input_check(int argc, char **argv);
 int			ph_atoi(char *str);
 uint64_t	crono(void);
-uint64_t	time_inc(uint64_t past, uint64_t present);
+void		ph_print(char *color, t_philo *philo, char *s, bool dead);
 
-/*
-	INITIALIZATION
-*/
-int		init_mutex(t_rules *rules);
-void	init_philo(t_rules *rules);
-int		start_simulation(t_rules *rules);
+//	INITIALIZATION
+int		init_struct_mutex(int argc, char **argv, t_rules *rules);
+int		init_simulation(t_rules *rules);
 
 /*
 	UTILS
 */
 void	print_philo(t_rules *data);
+void	ft_usleep(uint64_t ms_wait);
 /*
 	EXIT_CASES
 */

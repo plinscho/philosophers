@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 18:30:32 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/03 15:51:39 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/03 20:51:41 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,27 +41,6 @@ nº N + 1
 
 #include "philo.h"
 
-//	argc:		0			1					2			3				4		
-// input is [./philo] [number of philos] [time to die] [time_to_eat] [time_to_sleep] [(5)]
-int	init_struct_mutex(int argc, char **argv, t_rules *rules)
-{
-	rules->philo_units = (uint64_t)ph_atoi(argv[1]);
-	rules->time_to_die = (uint64_t)ph_atoi(argv[2]);
-	rules->time_to_eat = (uint64_t)ph_atoi(argv[3]);
-	rules->time_to_sleep = (uint64_t)ph_atoi(argv[4]);
-	rules->meals = -1;	// value if no additional option
-	rules->died = 0;
-	rules->all_ate = 0;
-	if (argc > 5)
-		rules->meals = (uint64_t)ph_atoi(argv[5]);
-	if (rules->philo_units == 0)
-		return (exit_philo(NULL, "At least 1 philo has to exist...\n", BAD_INPUT));
-	if (init_mutex(rules))
-		return (exit_philo("THREADS", "Thread creation returned 1.\n", MUTEX));
-	init_philo(rules);
-	return (0);	
-}
-
 // 	joining threads created before.
 int	join_threads(t_rules *data)
 {
@@ -83,16 +62,14 @@ int main(int argc, char **argv)
 {
 	t_rules		rules;
 
-	if (input_check(argc, argv))
+	if (input_check(argc, argv))	// make solution for 1 philosopher.
 		return (1);
 	if (init_struct_mutex(argc, argv, &rules))
-		return (free_struct(&rules));
-	if (start_simulation(&rules))
+		return (2);
+	if (init_simulation(&rules))
 		return(free_struct(&rules));
+	check_philos(&rules);
 	join_threads(&rules);
-// uint64_t start = crono();
-// 	while (1)
-// 		printf("%llu\n", (crono() - start) / 1000);
 	free_struct(&rules);
 	return (0);
 }
