@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:49:28 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/03 20:31:46 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/04 14:00:49 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ void	init_philo(t_rules *rules)
 			rules->philos[i].r_fork = rules->philos[rules->philo_units - 1].l_fork;
 		else
 			rules->philos[i].r_fork = rules->philos[i - 1].l_fork;
-//		pthread_mutex_init(&rules->philos[i].l_fork, NULL);
 		rules->philos[i].time_last_meal = 0;
+		rules->philos[i].done_eating = 0;
 		rules->philos[i].rules = rules;
 		i++;
 	}
@@ -54,9 +54,6 @@ void	init_philo(t_rules *rules)
 // input is [./philo] [number of philos] [time to die] [time_to_eat] [time_to_sleep] [(5)]
 int	init_struct_mutex(int argc, char **argv, t_rules *rules)
 {
-	rules->philos = (t_philo *)malloc(sizeof(t_philo) * rules->philo_units);
-	if (rules->philos == NULL)
-		return (exit_philo("MALLOC", "Malloc failed.\n", MALLOC));
 	rules->philo_units = (uint64_t)ph_atoi(argv[1]);
 	rules->time_to_die = (uint64_t)ph_atoi(argv[2]);
 	rules->time_to_eat = (uint64_t)ph_atoi(argv[3]);
@@ -72,6 +69,9 @@ int	init_struct_mutex(int argc, char **argv, t_rules *rules)
 		return (exit_philo("THREADS", "Too many threads!", THREADS));
 	pthread_mutex_init(&rules->m_check_meal, NULL);
 	pthread_mutex_init(&rules->m_printer, NULL);
+	rules->philos = (t_philo *)malloc(sizeof(t_philo) * rules->philo_units);
+	if (rules->philos == NULL)
+		return (exit_philo("MALLOC", "Malloc failed.\n", MALLOC));
 	init_philo(rules);
 	return (0);	
 }

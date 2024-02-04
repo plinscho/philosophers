@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 12:31:42 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/03 20:31:23 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/04 14:00:25 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ typedef struct s_philo
 	struct s_rules	*rules;	
 	int				id;
 	int				num_meals;
+	int				done_eating;
 	uint64_t		time_last_meal;
 	uint64_t		time_to_die;
 }	t_philo;
@@ -93,6 +94,7 @@ typedef enum errors
 
 // ROUTINE
 void	simul(t_philo *ph);
+void	check_philos(t_rules *rules);
 
 // UTILS
 int			input_check(int argc, char **argv);

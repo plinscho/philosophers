@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 18:30:32 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/03 20:58:43 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/04 14:30:13 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	join_threads(t_rules *data)
 	pthread_t	p;
 
 	i = 0;
-	while (i < data->philo_units)
+	while (i < data->philo_units && data->died == 0)
 	{
 		p = data->philos[i].threat_id;
 		if (pthread_join(p, NULL) != 0)
@@ -68,8 +68,9 @@ int main(int argc, char **argv)
 		return (2);
 	if (init_simulation(&rules))
 		return(free_struct(&rules));
-//	check_philos(&rules);
-	join_threads(&rules);
+	check_philos(&rules);
+	if (join_threads(&rules))
+		return (free_struct(&rules));
 	free_struct(&rules);
 	return (0);
 }
