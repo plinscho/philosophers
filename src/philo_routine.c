@@ -35,8 +35,8 @@ void	check_philos(t_rules *rules)
 	while (rules->died == 0)
 	{
 		pthread_mutex_lock(&rules->m_check_meal);
-		pthread_mutex_unlock(&rules->m_check_meal);
 		check_death(rules->philos[i], rules);
+		pthread_mutex_unlock(&rules->m_check_meal);
 		pthread_mutex_lock(&rules->m_check_meal);
 		if (rules->philos[i].num_meals == rules->max_meals)
 		{
