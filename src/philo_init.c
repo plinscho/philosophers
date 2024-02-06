@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:49:28 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/06 19:19:39 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/06 19:46:13 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,10 +80,10 @@ int	init_struct_mutex(int argc, char **argv, t_rules *rules)
 		return (exit_philo("THREADS", "Too many threads!", THREADS));
 	pthread_mutex_init(&rules->m_check_meal, NULL);
 	pthread_mutex_init(&rules->m_printer, NULL);
+	pthread_mutex_init(&rules->m_dead, NULL);
 	rules->philos = (t_philo *)malloc(sizeof(t_philo) * rules->philo_units);
 	if (rules->philos == NULL)
 		return (exit_philo("MALLOC", "Malloc failed.\n", MALLOC));
 	init_philo(rules);
 	return (0);	
 }
-
