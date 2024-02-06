@@ -12,10 +12,10 @@
 
 #include "philo.h"
 
-void	check_death(t_philo p, t_rules *rules, uint64_t death_time)
+void	check_death(t_philo p, t_rules *rules)
 {
 	pthread_mutex_lock(&rules->m_dead);
-	if (crono() - rules->start_time > death_time)
+	if (crono() - p.time_last_meal > rules->time_to_die)
 	{
 		rules->died = 1;
 		pthread_mutex_unlock(&rules->m_dead);
@@ -27,7 +27,6 @@ void	check_death(t_philo p, t_rules *rules, uint64_t death_time)
 
 void	check_philos(t_rules *rules)
 {
-	uint64_t	time;
 	int			i;
 	int			ph_done;
 
@@ -36,9 +35,8 @@ void	check_philos(t_rules *rules)
 	while (rules->died == 0)
 	{
 		pthread_mutex_lock(&rules->m_check_meal);
-		time = rules->philos[i].time_to_die;
 		pthread_mutex_unlock(&rules->m_check_meal);
-		check_death(rules->philos[i], rules, time);
+		check_death(rules->philos[i], rules);
 		pthread_mutex_lock(&rules->m_check_meal);
 		if (rules->philos[i].num_meals == rules->max_meals)
 		{
@@ -48,26 +46,25 @@ void	check_philos(t_rules *rules)
 		pthread_mutex_unlock(&rules->m_check_meal);
 		if (ph_done == rules->philo_units)
 			break;
-
 	}
 }
 
 void	ph_life(t_philo *ph)
 {
-	pthread_mutex_lock(&ph->l_fork);
+	pthread_mutex_lock(ph->l_fork);
 	ph_print(T, ph, FORK, false);
-	pthread_mutex_lock(&ph->r_fork);
+	pthread_mutex_lock(ph->r_fork);
 	ph_print(C, ph, FORK, false);
 	pthread_mutex_lock(&ph->rules->m_check_meal);
-	ph->time_to_die += (crono() - ph->rules->time_to_die);
+	ph->time_last_meal = crono();
 	ph->num_meals++;
 	if (ph->num_meals == ph->rules->max_meals)
 		ph->done_eating++;
 	pthread_mutex_unlock(&ph->rules->m_check_meal);
 	ph_print(G, ph, EAT, false);
 	ft_usleep(ph->rules->time_to_eat);
-	pthread_mutex_unlock(&ph->l_fork);
-	pthread_mutex_unlock(&ph->r_fork);
+	pthread_mutex_unlock(ph->l_fork);
+	pthread_mutex_unlock(ph->r_fork);
 	ph_print(Y, ph, SLEEP, false);
 	ft_usleep(ph->rules->time_to_sleep);
 	ph_print(F, ph, THINK, false);
