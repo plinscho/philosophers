@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 12:31:42 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/04 14:00:25 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/06 19:09:06 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,12 @@
 
 typedef struct s_philo
 {
-	pthread_t		threat_id;
-	pthread_mutex_t	l_fork;
-	pthread_mutex_t	r_fork;
-	struct s_rules	*rules;	
 	int				id;
 	int				num_meals;
+	pthread_t		threat_id;
+	pthread_mutex_t	*l_fork;
+	pthread_mutex_t	*r_fork;
+	struct s_rules	*rules;	
 	int				done_eating;
 	uint64_t		time_last_meal;
 	uint64_t		time_to_die;
@@ -64,6 +64,7 @@ typedef struct s_rules
 	int				max_meals;
 	int				all_ate;
 	uint64_t		start_time;
+	pthread_mutex_t	forks[250];
 	pthread_mutex_t	m_check_meal;
 	pthread_mutex_t	m_printer;
 	pthread_mutex_t	m_dead;

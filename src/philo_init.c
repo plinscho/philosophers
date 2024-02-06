@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:49:28 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/04 14:00:49 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/06 19:46:13 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,20 +32,31 @@ int	init_simulation(t_rules *rules)
 
 void	init_philo(t_rules *rules)
 {
-	int	i;
+	int		i;
+	t_philo	*p;
 
 	i = 0;
 	while (i < rules->philo_units)
 	{
-		rules->philos[i].id = i + 1;
-		rules->philos[i].num_meals = 0;
+		p = &rules->philos[i];
+		p->id = i + 1;
+		p->num_meals = 0;
+		pthread_mutex_init(&rules->forks[i], NULL);
+		p->l_fork = &rules->forks[i];
+		p->time_last_meal = 0;
+		p->done_eating = 0;
+		p->rules = rules;
+		p->time_to_die = rules->time_to_die;
+		i++;
+	}
+	i = 0;
+	while (i < rules->philo_units)
+	{
+		p = &rules->philos[i];
 		if (i == 0)
-			rules->philos[i].r_fork = rules->philos[rules->philo_units - 1].l_fork;
+			p->r_fork = &rules->forks[rules->philo_units - 1];
 		else
-			rules->philos[i].r_fork = rules->philos[i - 1].l_fork;
-		rules->philos[i].time_last_meal = 0;
-		rules->philos[i].done_eating = 0;
-		rules->philos[i].rules = rules;
+			p->r_fork = &rules->forks[i - 1];
 		i++;
 	}
 }
@@ -65,14 +76,14 @@ int	init_struct_mutex(int argc, char **argv, t_rules *rules)
 		rules->max_meals = (uint64_t)ph_atoi(argv[5]);
 	if (rules->philo_units == 0)
 		return (exit_philo("INPUT", "At least 1 philo has to exist...\n", BAD_INPUT));
-	else if (rules->philo_units > 200)
+	else if (rules->philo_units > 250)
 		return (exit_philo("THREADS", "Too many threads!", THREADS));
 	pthread_mutex_init(&rules->m_check_meal, NULL);
 	pthread_mutex_init(&rules->m_printer, NULL);
+	pthread_mutex_init(&rules->m_dead, NULL);
 	rules->philos = (t_philo *)malloc(sizeof(t_philo) * rules->philo_units);
 	if (rules->philos == NULL)
 		return (exit_philo("MALLOC", "Malloc failed.\n", MALLOC));
 	init_philo(rules);
 	return (0);	
 }
-
