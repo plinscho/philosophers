@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 12:31:42 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/06 19:09:06 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/07 19:21:30 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef struct s_philo
 	int				id;
 	int				num_meals;
 	pthread_t		threat_id;
+	pthread_mutex_t	m_death;
 	pthread_mutex_t	*l_fork;
 	pthread_mutex_t	*r_fork;
 	struct s_rules	*rules;	

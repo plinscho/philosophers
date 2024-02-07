@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:49:28 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/06 22:56:53 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/07 19:22:10 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,13 @@ void	init_philo(t_rules *rules)
 		p = &rules->philos[i];
 		p->id = i + 1;
 		p->num_meals = 0;
-		pthread_mutex_init(&rules->forks[i], NULL);
 		p->l_fork = &rules->forks[i];
 		p->time_last_meal = crono();
 		p->done_eating = 0;
 		p->rules = rules;
 		p->time_to_die = rules->time_to_die;
+		pthread_mutex_init(&rules->forks[i], NULL);
+		pthread_mutex_init(&p->m_death, NULL);
 		i++;
 	}
 	i = 0;

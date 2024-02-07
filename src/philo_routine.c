@@ -34,18 +34,16 @@ void	check_philos(t_rules *rules)
 	ph_done = 0;
 	while (rules->died == 0)
 	{
-		pthread_mutex_lock(&rules->m_check_meal);
 		check_death(rules->philos[i], rules);
-		pthread_mutex_unlock(&rules->m_check_meal);
-		pthread_mutex_lock(&rules->m_check_meal);
-		if (rules->philos[i].num_meals == rules->max_meals)
-		{
-			rules->philos[i].done_eating = 1;
+		pthread_mutex_lock(&rules->philos[i].m_death);
+		if (rules->philos[i].done_eating)
 			ph_done++;
-		}
-		pthread_mutex_unlock(&rules->m_check_meal);
+		pthread_mutex_unlock(&rules->philos[i].m_death);
 		if (ph_done == rules->philo_units)
 			break;
+		i++;
+		if (i == rules->philo_units)
+			i = 0;
 	}
 }
 
@@ -55,16 +53,16 @@ void	ph_life(t_philo *ph)
 	ph_print(T, ph, FORK, false);
 	pthread_mutex_lock(ph->r_fork);
 	ph_print(C, ph, FORK, false);
-	pthread_mutex_lock(&ph->rules->m_check_meal);
+	pthread_mutex_lock(&ph->m_death);
 	ph->time_last_meal = crono();
-	ph->num_meals++;
+	ph->num_meals += 1;
 	if (ph->num_meals == ph->rules->max_meals)
 		ph->done_eating++;
-	pthread_mutex_unlock(&ph->rules->m_check_meal);
+	pthread_mutex_unlock(&ph->m_death);
 	ph_print(G, ph, EAT, false);
 	ft_usleep(ph->rules->time_to_eat);
-	pthread_mutex_unlock(ph->l_fork);
 	pthread_mutex_unlock(ph->r_fork);
+	pthread_mutex_unlock(ph->l_fork);
 	ph_print(Y, ph, SLEEP, false);
 	ft_usleep(ph->rules->time_to_sleep);
 	ph_print(F, ph, THINK, false);
@@ -74,8 +72,8 @@ void	simul(t_philo *ph)
 {
 	int	exit;
 
-	if (ph->id % 2 == 0)
-		ft_usleep(ph->rules->time_to_eat);
+	if (ph->id % 2 != 0)
+		ft_usleep(ph->rules->time_to_eat/10);
 	exit = 0;
 	while (exit == 0 && ph->done_eating == 0)
 	{
