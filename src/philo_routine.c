@@ -72,8 +72,8 @@ void	simul(t_philo *ph)
 {
 	int	exit;
 
-	if (ph->id % 2 != 0)
-		ft_usleep(ph->rules->time_to_eat/10);
+	if (ph->id % 2 == 0)
+		ft_usleep(ph->rules->time_to_eat);
 	exit = 0;
 	while (exit == 0 && ph->done_eating == 0)
 	{
