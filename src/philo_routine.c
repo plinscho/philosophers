@@ -47,12 +47,26 @@ void	check_philos(t_rules *rules)
 	}
 }
 
+void	take_fork(t_philo *ph)
+{
+	if (ph->id == 1)
+	{
+		pthread_mutex_lock(ph->r_fork);
+		ph_print(T, ph, FORK, false);
+		pthread_mutex_lock(ph->l_fork);
+	}
+	else
+	{
+		pthread_mutex_lock(ph->l_fork);
+		ph_print(T, ph, FORK, false);
+		pthread_mutex_lock(ph->r_fork);
+	}
+	ph_print(C, ph, FORK, false);
+}
+
 void	ph_life(t_philo *ph)
 {
-	pthread_mutex_lock(ph->l_fork);
-	ph_print(T, ph, FORK, false);
-	pthread_mutex_lock(ph->r_fork);
-	ph_print(C, ph, FORK, false);
+	take_fork(ph);
 	pthread_mutex_lock(&ph->m_death);
 	ph->time_last_meal = crono();
 	ph->num_meals += 1;
@@ -72,7 +86,7 @@ void	simul(t_philo *ph)
 {
 	int	exit;
 
-	if (ph->id % 2 == 0)
+	if (ph->id % 2 != 0)
 		ft_usleep(ph->rules->time_to_eat);
 	exit = 0;
 	while (exit == 0 && ph->done_eating == 0)
