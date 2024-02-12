@@ -47,33 +47,19 @@ void	check_philos(t_rules *rules)
 	}
 }
 
-void	take_fork(t_philo *ph)
-{
-	if (ph->id == 1)
-	{
-		pthread_mutex_lock(ph->r_fork);
-		ph_print(T, ph, FORK, false);
-		pthread_mutex_lock(ph->l_fork);
-	}
-	else
-	{
-		pthread_mutex_lock(ph->l_fork);
-		ph_print(T, ph, FORK, false);
-		pthread_mutex_lock(ph->r_fork);
-	}
-	ph_print(C, ph, FORK, false);
-}
-
 void	ph_life(t_philo *ph)
 {
-	take_fork(ph);
-	pthread_mutex_lock(&ph->m_death);
-	ph->time_last_meal = crono();
-	ph->num_meals += 1;
-	if (ph->num_meals == ph->rules->max_meals)
-		ph->done_eating++;
-	pthread_mutex_unlock(&ph->m_death);
+	t_rules	*rules;
+
+	rules = ph->rules;
+	pthread_mutex_lock(&(rules->forks[ph->l_fork]));
+	ph_print(R, ph, FORK, false);
+	pthread_mutex_lock(&(rules->forks[ph->r_fork]));
+	ph_print(B, ph, FORK, false);
+	pthread_mutex_lock(&(rules->m_check_meal));
 	ph_print(G, ph, EAT, false);
+	ph->time_last_meal = crono();
+	pthread_mutex_unlock(&(rules->m_check_meal));
 	ft_usleep(ph->rules->time_to_eat);
 	pthread_mutex_unlock(ph->r_fork);
 	pthread_mutex_unlock(ph->l_fork);
@@ -82,18 +68,41 @@ void	ph_life(t_philo *ph)
 	ph_print(F, ph, THINK, false);
 }
 
-void	simul(t_philo *ph)
+void	*sim(void *void_ph)
 {
-	int	exit;
+	t_rules	*rules;
+	t_philo	*philo;
+	int		i;
 
-	if (ph->id % 2 != 0)
-		ft_usleep(ph->rules->time_to_eat);
-	exit = 0;
-	while (exit == 0 && ph->done_eating == 0)
+	philo = (t_philo *)void_ph;
+	rules = philo->rules;
+	i = 0;
+	if (philo->id % 2)
+		ft_usleep(philo->rules->time_to_eat);
+	while (rules->died != 0)
 	{
-		ph_life(ph);
-		pthread_mutex_lock(&ph->rules->m_dead);
-		exit = ph->rules->died;
-		pthread_mutex_unlock(&ph->rules->m_dead);
+		ph_life(philo);
+		if (rules->all_ate)
+			break;
+
 	}
+}
+
+int	init_simulation(t_rules *rules)
+{
+	t_philo	*ph;
+	int		i;
+
+	i = 0;
+	ph = rules->philos;
+	rules->start_time = crono();
+	while (i < rules->philo_units)
+	{
+		if (pthread_create(&(ph[i].threat_id), NULL, sim, &(rules->philos[i])))
+			return (THREADS);
+		ph[i].time_last_meal = crono();
+		i++;
+	}
+	check_death(void, NULL);
+	return (0);
 }

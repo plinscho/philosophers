@@ -6,60 +6,47 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:49:28 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/07 19:22:10 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/12 17:18:13 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	init_simulation(t_rules *rules)
-{
-	t_philo	*ph;
-	int		i;
-
-	i = 0;
-	ph = rules->philos;
-	rules->start_time = crono();
-	while (i < rules->philo_units)
-	{
-		if (pthread_create(&(ph[i].threat_id), NULL, (void *)simul, \
-		&(rules->philos[i])))
-			return (THREADS);
-		i++;
-	}
-	return (0);
-}
-
 void	init_philo(t_rules *rules)
 {
-	int		i;
-	t_philo	*p;
+	int	i;
 
-	i = 0;
-	while (i < rules->philo_units)
+	i = rules->philo_units;
+	while (--i >= 0)
 	{
-		p = &rules->philos[i];
-		p->id = i + 1;
-		p->num_meals = 0;
-		p->l_fork = &rules->forks[i];
-		p->time_last_meal = crono();
-		p->done_eating = 0;
-		p->rules = rules;
-		p->time_to_die = rules->time_to_die;
-		pthread_mutex_init(&rules->forks[i], NULL);
-		pthread_mutex_init(&p->m_death, NULL);
-		i++;
+		rules->philos[i].id = i;
+		rules->philos[i].num_meals = 0;
+		rules->philos[i].l_fork = i;
+		rules->philos[i].r_fork = (i + 1) % rules->philo_units;
+		rules->philos[i].time_last_meal = 0;
+		rules->philos[i].rules = rules;
 	}
-	i = 0;
-	while (i < rules->philo_units)
+
+}
+
+int	init_mutex(t_rules *r)
+{
+	int	i;
+
+	i = r->philo_units;
+	while (i >= 0)
 	{
-		p = &rules->philos[i];
-		if (i == 0)
-			p->r_fork = &rules->forks[rules->philo_units - 1];
-		else
-			p->r_fork = &rules->forks[i - 1];
-		i++;
-	}
+		if (pthread_mutex_init(&(r->forks[i]), NULL))
+			return (exit_philo("INIT_MUTEX", "Mutex fail to initialize", THREADS));
+		i--;
+	} 
+	if (pthread_mutex_init(&(r->m_check_meal), NULL))
+		return (exit_philo("INIT_MUTEX", "Mutex fail to initialize", THREADS));
+	if (pthread_mutex_init(&(r->m_printer), NULL))
+		return (exit_philo("INIT_MUTEX", "Mutex fail to initialize", THREADS));
+	if (pthread_mutex_init(&(r->m_dead), NULL))
+		return (exit_philo("INIT_MUTEX", "Mutex fail to initialize", THREADS));
+	return (0);
 }
 
 //	argc:		0			1					2			3				4		
@@ -79,12 +66,8 @@ int	init_struct_mutex(int argc, char **argv, t_rules *rules)
 		return (exit_philo("INPUT", "At least 1 philo has to exist...\n", BAD_INPUT));
 	else if (rules->philo_units > 250)
 		return (exit_philo("THREADS", "Too many threads!", THREADS));
-	pthread_mutex_init(&rules->m_check_meal, NULL);
-	pthread_mutex_init(&rules->m_printer, NULL);
-	pthread_mutex_init(&rules->m_dead, NULL);
-	rules->philos = (t_philo *)malloc(sizeof(t_philo) * rules->philo_units);
-	if (rules->philos == NULL)
-		return (exit_philo("MALLOC", "Malloc failed.\n", MALLOC));
+	if (init_mutex(rules))
+		return (THREADS);
 	init_philo(rules);
 	return (0);	
 }
