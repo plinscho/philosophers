@@ -69,7 +69,7 @@ void	*sim(void *void_ph)
 	rules = philo->rules;
 	if (philo->id % 2)
 		ft_usleep(philo->rules->time_to_eat);
-	while (rules->died != 0)
+	while (rules->died == 0)
 	{
 		ph_life(philo);
 		if (rules->all_ate)
