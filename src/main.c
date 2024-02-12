@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 18:30:32 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/04 14:30:13 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/12 18:39:15 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,23 +41,6 @@ nº N + 1
 
 #include "philo.h"
 
-// 	joining threads created before.
-int	join_threads(t_rules *data)
-{
-	int			i;
-	pthread_t	p;
-
-	i = 0;
-	while (i < data->philo_units && data->died == 0)
-	{
-		p = data->philos[i].threat_id;
-		if (pthread_join(p, NULL) != 0)
-			return (exit_philo("JOIN_THREADS", "Error joining threads.", THREADS));
-		i++;
-	}
-	return (0);
-}
-
 int main(int argc, char **argv)
 {
 	t_rules		rules;
@@ -68,10 +51,6 @@ int main(int argc, char **argv)
 		return (2);
 	if (init_simulation(&rules))
 		return(free_struct(&rules));
-	check_philos(&rules);
-	if (join_threads(&rules))
-		return (free_struct(&rules));
-	free_struct(&rules);
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:49:28 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/12 17:18:13 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/12 18:19:03 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	init_philo(t_rules *rules)
 		rules->philos[i].time_last_meal = 0;
 		rules->philos[i].rules = rules;
 	}
-
+	return ;
 }
 
 int	init_mutex(t_rules *r)
@@ -41,11 +41,11 @@ int	init_mutex(t_rules *r)
 		i--;
 	} 
 	if (pthread_mutex_init(&(r->m_check_meal), NULL))
-		return (exit_philo("INIT_MUTEX", "Mutex fail to initialize", THREADS));
+		return (exit_philo("INIT_MUTEX", "Mutex meal failed", THREADS));
 	if (pthread_mutex_init(&(r->m_printer), NULL))
-		return (exit_philo("INIT_MUTEX", "Mutex fail to initialize", THREADS));
+		return (exit_philo("INIT_MUTEX", "Mutex print failed", THREADS));
 	if (pthread_mutex_init(&(r->m_dead), NULL))
-		return (exit_philo("INIT_MUTEX", "Mutex fail to initialize", THREADS));
+		return (exit_philo("INIT_MUTEX", "Mutex death failed", THREADS));
 	return (0);
 }
 
