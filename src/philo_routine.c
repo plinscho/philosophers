@@ -67,13 +67,13 @@ void	take_fork(t_philo *ph)
 void	ph_life(t_philo *ph)
 {
 	take_fork(ph);
+	ph_print(G, ph, EAT, false);
 	pthread_mutex_lock(&ph->m_death);
 	ph->time_last_meal = crono();
 	ph->num_meals += 1;
 	if (ph->num_meals == ph->rules->max_meals)
 		ph->done_eating++;
 	pthread_mutex_unlock(&ph->m_death);
-	ph_print(G, ph, EAT, false);
 	ft_usleep(ph->rules->time_to_eat);
 	pthread_mutex_unlock(ph->r_fork);
 	pthread_mutex_unlock(ph->l_fork);

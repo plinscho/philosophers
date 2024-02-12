@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/28 20:13:05 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/09 20:22:42 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/12 17:50:14 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	ft_usleep(uint64_t ms_wait)
 {
 	ms_wait += crono();
 	while (crono() <= ms_wait)
-		usleep(200);
+		usleep(50);
 }
 
 // funtion return 0 for succes or -1 for failure
