@@ -16,10 +16,10 @@ void	check_death(t_rules *rules, t_philo *p)
 {
 	int	i;
 
-	while (rules->all_ate != 0)
+	while (rules->all_ate == 0)
 	{
 		i = -1;
-		while (++i < rules->philo_units && rules->died != 0)
+		while (++i < rules->philo_units && rules->died == 0)
 		{
 			pthread_mutex_lock(&(rules->m_dead));
 			if ((crono() - p[i].time_last_meal) > rules->time_to_die)
