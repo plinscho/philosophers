@@ -30,7 +30,7 @@ void	check_death(t_rules *rules, t_philo *p)
 				return ;
 			}
 			pthread_mutex_unlock(&(rules->m_dead));
-			usleep(100);
+			usleep(50);
 		}
 		i = 0;
 		while (rules->max_meals != -1 && i < rules->philo_units && 
@@ -86,6 +86,10 @@ void	exit_simulation(t_rules *rules, t_philo *philo)
 	int	i;
 
 	i = 0;
+	if (rules->philo_units == 1)
+	{
+		return ;
+	}
 	while (i < rules->philo_units)
 	{
 		pthread_join(philo[i].threat_id, NULL);
