@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/28 20:13:05 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/12 18:51:23 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/13 16:25:35 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,16 @@ void	ph_print(char *color, t_philo *philo, char *s, bool dead)
 	return ;
 }
 
-void	ft_usleep(uint64_t ms_wait)
+void	ft_usleep(uint64_t ms_wait, t_rules *rules)
 {
-	ms_wait += crono();
-	while (crono() <= ms_wait)
-		usleep(100);
+	long long int	i;
+	i = crono();
+	while (!(rules->died))
+	{
+		if (crono() - i >= ms_wait)
+			break ;
+		usleep(50);
+	}
 }
 
 // funtion return 0 for succes or -1 for failure
@@ -43,7 +48,7 @@ uint64_t	crono(void)
 
 	if (gettimeofday(&t, NULL) < 0)
 		write(2, "gettimeofday() function failed\n", 32);
-	return(t.tv_sec * 1000 + t.tv_usec / 1000);
+	return(t.tv_sec * 1000 + (t.tv_usec / 1000));
 }
 
 /*

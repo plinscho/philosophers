@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 12:31:42 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/12 17:19:04 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/13 16:21:52 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ int		init_simulation(t_rules *rules);
 	UTILS
 */
 void	print_philo(t_rules *data);
-void	ft_usleep(uint64_t ms_wait);
+void	ft_usleep(uint64_t ms_wait, t_rules *rules);
 /*
 	EXIT_CASES
 */

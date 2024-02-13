@@ -54,7 +54,7 @@ void	ph_life(t_philo *ph)
 	ph_print(G, ph, EAT, false);
 	ph->time_last_meal = crono();
 	pthread_mutex_unlock(&(rules->m_check_meal));
-	ft_usleep(ph->rules->time_to_eat);
+	ft_usleep(ph->rules->time_to_eat, ph->rules);
 	(ph->num_meals)++;
 	pthread_mutex_unlock(&(rules->forks[ph->l_fork]));
 	pthread_mutex_unlock(&(rules->forks[ph->r_fork]));
@@ -68,14 +68,14 @@ void	*sim(void *void_ph)
 	philo = (t_philo *)void_ph;
 	rules = philo->rules;
 	if (philo->id % 2)
-		ft_usleep(philo->rules->time_to_eat);
+		ft_usleep(philo->rules->time_to_eat, rules);
 	while (rules->died == 0)
 	{
 		ph_life(philo);
 		if (rules->all_ate)
 			break;
 		ph_print(Y, philo, SLEEP, false);
-		ft_usleep(philo->rules->time_to_sleep);
+		ft_usleep(philo->rules->time_to_sleep, rules);
 		ph_print(F, philo, THINK, false);
 	}
 	return (NULL);
