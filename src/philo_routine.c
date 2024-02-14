@@ -37,7 +37,12 @@ void	check_death(t_rules *rules, t_philo *p)
 				p[i].num_meals >= rules->max_meals)
 			i++;
 		if (i == rules->philo_units)
+		{
+			pthread_mutex_lock(&(rules->m_check_meal));
 			rules->all_ate = 1;
+			pthread_mutex_unlock(&(rules->m_check_meal));
+		}
+		
 	}
 }
 
