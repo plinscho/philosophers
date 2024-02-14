@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/28 20:13:05 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/13 17:39:21 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/14 18:39:15 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	ph_print(char *color, t_philo *philo, char *s, bool dead)
 	pthread_mutex_lock(&philo->rules->m_printer);
 	if (!(philo->rules->died))
 	{
-		printf("%s%llu ", color, crono() - philo->rules->start_time);
+		printf("%s%lu ", color, crono() - philo->rules->start_time);
 		printf("Philo[%d] %s\n%s", philo->id, s, E);	
 	}
 	pthread_mutex_unlock(&philo->rules->m_printer);
@@ -32,7 +32,9 @@ void	ft_usleep(uint64_t ms_wait, t_rules *rules)
 	while (!(rules->died))
 	{
 		if (crono() - i >= ms_wait)
+		{
 			break ;
+		}
 		usleep(50);
 	}
 }
