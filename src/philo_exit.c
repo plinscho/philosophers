@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 13:10:39 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/14 18:30:33 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/14 20:16:25 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ int	free_struct(t_rules *data)
 {
 //	free(data->philos);
 	pthread_mutex_destroy(&(data->m_printer));
+	pthread_mutex_destroy(&(data->m_dead));
 	pthread_mutex_destroy(&(data->m_check_meal));
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 18:30:32 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/12 18:39:15 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/14 20:15:47 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int main(int argc, char **argv)
 	if (init_struct_mutex(argc, argv, &rules))
 		return (2);
 	if (init_simulation(&rules))
-		return(free_struct(&rules));
+		return(1);//free_struct(&rules));
 	return (0);
 }
 
