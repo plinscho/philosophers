@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 18:30:32 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/14 20:15:47 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/17 17:08:21 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,23 @@ nº N + 1
 
 int main(int argc, char **argv)
 {
-	t_rules		rules;
+	t_rules	rules;
+	int		i;
 
 	if (input_check(argc, argv))	// make solution for 1 philosopher.
 		return (1);
 	if (init_struct_mutex(argc, argv, &rules))
 		return (2);
 	if (init_simulation(&rules))
-		return(1);//free_struct(&rules));
+		return (3);
+	pthread_mutex_unlock(&(rules.m_dead));
+	check_philos(&rules);
+	i = 0;
+	while (i < rules.philo_units)
+	{
+		pthread_join(rules.philos[i].threat_id, NULL);
+		i++;
+	}
 	return (0);
 }
 

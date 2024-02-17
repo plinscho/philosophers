@@ -6,42 +6,56 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:49:28 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/12 18:19:03 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/17 16:51:00 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+int	init_simulation(t_rules *rules)
+{
+	t_philo	*ph;
+	int		i;
+
+	i = 0;
+	ph = rules->philos;
+	rules->start_time = crono();
+	while (i < rules->philo_units)
+	{
+		if (pthread_create(&(ph[i].threat_id), NULL, sim, &(rules->philos[i])))
+			return (THREADS);
+		i++;
+	}
+	return (0);
+}
+
 void	init_philo(t_rules *rules)
 {
 	int	i;
 
-	i = rules->philo_units;
-	while (--i >= 0)
+	i = 0;
+	pthread_mutex_lock(&(rules->m_start));
+	while (i < rules->philo_units)
 	{
 		rules->philos[i].id = i;
-		rules->philos[i].num_meals = 0;
-		rules->philos[i].l_fork = i;
-		rules->philos[i].r_fork = (i + 1) % rules->philo_units;
-		rules->philos[i].time_last_meal = 0;
 		rules->philos[i].rules = rules;
+		rules->philos[i].num_meals = 0;
+		rules->philos[i].time_die= rules->time_to_die;
+		if (i == 0)
+			rules->philos[i].r_fork = 
+			&(rules->philos[rules->philo_units - 1].l_fork);
+		else
+			rules->philos[i].r_fork = &(rules->philos[i - 1].l_fork);
+		pthread_mutex_init(&rules->philos[i].l_fork, NULL);
+		pthread_mutex_init(&rules->philos[i].m_check_meal, NULL);
+		i++;
 	}
-	return ;
 }
 
 int	init_mutex(t_rules *r)
 {
-	int	i;
-
-	i = r->philo_units;
-	while (i >= 0)
-	{
-		if (pthread_mutex_init(&(r->forks[i]), NULL))
-			return (exit_philo("INIT_MUTEX", "Mutex fail to initialize", THREADS));
-		i--;
-	} 
-	if (pthread_mutex_init(&(r->m_check_meal), NULL))
-		return (exit_philo("INIT_MUTEX", "Mutex meal failed", THREADS));
+	if (pthread_mutex_init(&(r->m_start), NULL))
+		return (exit_philo("INIT_MUTEX", "Mutex start failed", THREADS));
 	if (pthread_mutex_init(&(r->m_printer), NULL))
 		return (exit_philo("INIT_MUTEX", "Mutex print failed", THREADS));
 	if (pthread_mutex_init(&(r->m_dead), NULL))
@@ -57,7 +71,7 @@ int	init_struct_mutex(int argc, char **argv, t_rules *rules)
 	rules->time_to_die = (uint64_t)ph_atoi(argv[2]);
 	rules->time_to_eat = (uint64_t)ph_atoi(argv[3]);
 	rules->time_to_sleep = (uint64_t)ph_atoi(argv[4]);
-	rules->max_meals = -1;	// value if no additional option
+	rules->max_meals = -1;
 	rules->died = 0;
 	rules->all_ate = 0;
 	if (argc > 5)
@@ -69,5 +83,6 @@ int	init_struct_mutex(int argc, char **argv, t_rules *rules)
 	if (init_mutex(rules))
 		return (THREADS);
 	init_philo(rules);
+	init_simulation(rules);
 	return (0);	
 }

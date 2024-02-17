@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 12:31:42 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/13 16:21:52 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/17 16:49:40 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,11 @@ typedef struct s_philo
 {
 	int				id;
 	int				num_meals;
-	int				l_fork;
-	int				r_fork;
+	uint64_t		time_die;
 	uint64_t		time_last_meal;
+	pthread_mutex_t	l_fork;
+	pthread_mutex_t	*r_fork;
+	pthread_mutex_t	m_check_meal;
 	struct s_rules	*rules;	
 	pthread_t		threat_id;
 
@@ -63,10 +65,9 @@ typedef struct s_rules
 	int				max_meals;
 	int				all_ate;
 	uint64_t		start_time;
-	pthread_mutex_t	forks[250];
-	pthread_mutex_t	m_check_meal;
 	pthread_mutex_t	m_printer;
 	pthread_mutex_t	m_dead;
+	pthread_mutex_t	m_start;
 	t_philo			philos[250];
 	
 }	t_rules;
@@ -94,7 +95,7 @@ typedef enum errors
 # define F "\033[38;5;128m"  //purple
 
 // ROUTINE
-void	simul(t_philo *ph);
+void	*sim(void *void_ph);
 void	check_philos(t_rules *rules);
 
 // UTILS
@@ -110,8 +111,7 @@ int		init_simulation(t_rules *rules);
 /*
 	UTILS
 */
-void	print_philo(t_rules *data);
-void	ft_usleep(uint64_t ms_wait, t_rules *rules);
+void	ft_usleep(uint64_t ms_wait);
 /*
 	EXIT_CASES
 */
