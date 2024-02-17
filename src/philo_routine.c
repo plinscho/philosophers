@@ -22,7 +22,7 @@ void	is_dead(t_rules *rules, int i, uint64_t time)
 		ph_print(R, &(rules->philos[i]), DIE, true);
 	}
 	else
-		pthread_mutex_lock(&(rules->m_dead));
+		pthread_mutex_unlock(&(rules->m_dead));
 }
 
 void	check_philos(t_rules *rules)
@@ -34,7 +34,7 @@ void	check_philos(t_rules *rules)
 	while (rules->died == 0)
 	{
 		pthread_mutex_lock(&(rules->philos[i].m_check_meal));
-		time = rules->philos[i].time_last_meal;
+		time = rules->philos[i].time_die;
 		pthread_mutex_unlock(&(rules->philos[i].m_check_meal));
 		is_dead(rules, i, time);
 		pthread_mutex_lock(&(rules->philos[i].m_check_meal));
@@ -68,7 +68,7 @@ void	ph_life(t_philo *ph)
 	pthread_mutex_lock(ph->r_fork);
 	ph_print(B, ph, FORK, false);
 	pthread_mutex_lock(&(ph->m_check_meal));
-	ph->time_die = rules->time_to_die + (crono() - rules->time_to_die);
+	ph->time_die = rules->time_to_die + (crono() - rules->start_time);
 	ph->num_meals++;
 	pthread_mutex_unlock(&(ph->m_check_meal));
 	ph_print(G, ph, EAT, false);
@@ -90,8 +90,10 @@ void	*sim(void *void_ph)
 	rules = philo->rules;
 	finish = 0;
 	if (philo->id % 2 == 0)
-		ft_usleep(philo->rules->time_to_eat);
-	while (!finish && (philo->num_meals != philo->rules->max_meals))
+	{
+		ft_usleep(rules->time_to_eat);
+	}
+	while (finish == 0 && (philo->num_meals != rules->max_meals))
 	{
 		ph_life(philo);
 		pthread_mutex_lock(&(rules->m_dead));

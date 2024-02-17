@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -Wall -Werror -Wextra #-g -fsanitize=thread
+CFLAGS := -Wall -Werror -Wextra -g -fsanitize=thread
 
 SRC_DIR := src
 SRC_FILES := main.c input_utils.c philo_init.c philo_exit.c philo_routine.c philo_utils.c

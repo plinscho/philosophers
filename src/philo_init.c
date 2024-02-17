@@ -6,7 +6,7 @@
 /*   By: plinscho <plinscho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:49:28 by plinscho          #+#    #+#             */
-/*   Updated: 2024/02/17 16:51:00 by plinscho         ###   ########.fr       */
+/*   Updated: 2024/02/17 18:26:33 by plinscho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,7 @@ int	init_simulation(t_rules *rules)
 	rules->start_time = crono();
 	while (i < rules->philo_units)
 	{
-		if (pthread_create(&(ph[i].threat_id), NULL, sim, &(rules->philos[i])))
-			return (THREADS);
+		pthread_create(&(ph[i].threat_id), NULL, sim, &(rules->philos[i]));
 		i++;
 	}
 	return (0);
@@ -37,10 +36,10 @@ void	init_philo(t_rules *rules)
 	pthread_mutex_lock(&(rules->m_start));
 	while (i < rules->philo_units)
 	{
-		rules->philos[i].id = i;
+		rules->philos[i].id = i + 1;
 		rules->philos[i].rules = rules;
-		rules->philos[i].num_meals = 0;
 		rules->philos[i].time_die= rules->time_to_die;
+		rules->philos[i].num_meals = 0;
 		if (i == 0)
 			rules->philos[i].r_fork = 
 			&(rules->philos[rules->philo_units - 1].l_fork);
